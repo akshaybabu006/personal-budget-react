@@ -1,9 +1,61 @@
+//Below code thought inspiration was from intex site author: Adrien Miquel.
 import React from 'react';
+import axios from "axios";
+import Pie from 'react-chartjs-2';
+import ChartDonut from '../PieChart/ChartDonut';
 
-function HomePage() {
+class HomePage extends React.Component {
+   
+dataSource = {
+  labels: [],
+  datasets: [{
+      data: [],
+      backgroundColor: [
+        '#3FCD56',
+        '#DF3384',
+        '#C632EB',
+        '#FD6319',
+        '#ED3A39',
+        '#DF3D56',
+        '#CDC319',
+      ],
+      label: ''
+  }]
+};
+
+state = { dataSource: {labels: [],
+    datasets: [{
+        data: [],
+        backgroundColor: [
+            '#3FCD56',
+    '#DF3384',
+    '#C632EB',
+    '#FD6319',
+    '#ED3A39',
+    '#DF3D56',
+    '#CDC319',
+        ],
+        label: ''
+    }]}
+    };
+componentDidMount()
+ {
+    axios.get("http://localhost:3000/data.json")
+      .then(res => {
+          res=JSON.parse(JSON.stringify(res))
+          for(var i = 0; i < res.data.myBudget.length; i++){
+              this.dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
+              this.dataSource.labels[i] = res.data.myBudget[i].title;
+            }
+              this.setState(currentState =>({dataSource: this.dataSource}));
+        })
+      }
+
+      render() {
   return (
     <main  role="main" aria-labelledby="main"  className="container center">
-
+        
+        
         <div id = "main" className="page-area">
             <section className="text-box">
                 <h1>Stay on track </h1>
@@ -59,17 +111,16 @@ function HomePage() {
             <section className="text-box">
                 <h1>Chart</h1>
                 <p>
-                    {/* <canvas id="myChart" width="400" height="400"></canvas> */}
-                    
+                    <Pie data={this.state.dataSource}/>  
                 </p>
                 
             </section>
-            {/* <chart></chart> */}
-
+            <ChartDonut/>
         </div>
 
     </main>
   );
+}
 }
 
 export default HomePage;
